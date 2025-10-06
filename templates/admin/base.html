@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}🌱 AgroYanapay Admin{% endblock %}</title>
+    <style>
+        :root {
+            --primary-light: #E8EFE7;
+            --primary-light-2: #E1E6D6;
+            --primary-light-3: #C4D3B4;
+            --primary-medium: #90AF90;
+            --primary-dark: #59775E;
+            --primary-darker: #3C4D3C;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-medium));
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: background-color 0.3s;
+            font-weight: 500;
+        }
+        
+        .nav-links a:hover {
+            background-color: rgba(255,255,255,0.15);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+        }
+        
+        .container {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: white;
+            padding: 2rem 1.5rem;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            border-right: 1px solid var(--primary-light-2);
+        }
+        
+        .sidebar-section {
+            margin-bottom: 2rem;
+        }
+        
+        .sidebar-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--primary-darker);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--primary-darker);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .sidebar-menu a:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            transform: translateX(5px);
+        }
+        
+        .sidebar-menu a.active {
+            background-color: var(--primary-dark);
+            color: white;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            background: #f8f9fa;
+            overflow-y: auto;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--primary-medium);
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card.warning {
+            border-left-color: #ff9800;
+        }
+        
+        .stat-card.danger {
+            border-left-color: #f44336;
+        }
+        
+        .stat-card.info {
+            border-left-color: #2196f3;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-dark);
+            line-height: 1;
+        }
+        
+        .stat-card.warning .stat-number {
+            color: #ff9800;
+        }
+        
+        .stat-card.danger .stat-number {
+            color: #f44336;
+        }
+        
+        .stat-card.info .stat-number {
+            color: #2196f3;
+        }
+        
+        .stat-label {
+            color: #666;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border: 1px solid var(--primary-light-2);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--primary-light);
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-darker);
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .btn-primary {
+            background: var(--primary-dark);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-darker);
+            transform: translateY(-2px);
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        
+        .table th,
+        .table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--primary-light);
+        }
+        
+        .table th {
+            background: var(--primary-light);
+            font-weight: 600;
+            color: var(--primary-darker);
+        }
+        
+        .table tr:hover {
+            background: var(--primary-light-2);
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-available {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+        
+        .status-sold {
+            background: #fff3e0;
+            color: #ff9800;
+        }
+        
+        .status-pending {
+            background: #e3f2fd;
+            color: #2196f3;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .action-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border: 1px solid var(--primary-light-2);
+            transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-color: var(--primary-medium);
+        }
+        
+        .action-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-medium);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <span>🌱</span>
+            AgroYanapay Admin
+        </div>
+        <div class="nav-links">
+            <a href="/admin/" target="_blank">Django Admin</a>
+            <a href="{% url 'logout' %}">Cerrar Sesión</a>
+            <div class="user-info">
+                <span>👤 {{ user.username }}</span>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Navegación Principal</div>
+                <ul class="sidebar-menu">
+                    <li><a href="{% url 'dashboard' %}" class="{% if request.path == '/dashboard/' %}active{% endif %}">📊 Dashboard</a></li>
+                    <li><a href="/admin/products/product/">📦 Productos</a></li>
+                    <li><a href="/admin/reports/productionreport/">📋 Reportes</a></li>
+                    <li><a href="/admin/whatsapp_integration/whatsappreport/">💬 WhatsApp</a></li>
+                </ul>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="sidebar-title">Gestión</div>
+                <ul class="sidebar-menu">
+                    <li><a href="/admin/users/customuser/">👥 Usuarios</a></li>
+                    <li><a href="/admin/products/productcategory/">🏷️ Categorías</a></li>
+                    <li><a href="/admin/ai_analysis/">🤖 Análisis IA</a></li>
+                </ul>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="sidebar-title">Comunidades</div>
+                <ul class="sidebar-menu">
+                    <li><a href="#">🏘️ Comunidad A</a></li>
+                    <li><a href="#">🏘️ Comunidad B</a></li>
+                    <li><a href="#">🏘️ Comunidad C</a></li>
+                </ul>
+            </div>
+        </aside>
+        
+        <main class="main-content">
+            {% block content %}
+            <!-- Contenido específico de cada página -->
+            {% endblock %}
+        </main>
+    </div>
+</body>
+</html>
